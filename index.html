@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BAT-TRANSLATOR | RU → DE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bat-yellow: #f5c518;
+    --bat-dark: #0a0a0a;
+    --bat-gray: #1a1a2e;
+    --bat-mid: #16213e;
+    --bat-blue: #0f3460;
+    --bat-glow: #f5c51855;
+    --bat-text: #e0e0e0;
+    --neon-yellow: #ffe600;
+  }
+
+  body {
+    background: var(--bat-dark);
+    color: var(--bat-text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse at 20% 50%, #1a1a2e44 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, #0f346033 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, #f5c51808 0%, transparent 40%);
+    z-index: -1;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* ── Batman SVG Logo ── */
+  .bat-logo {
+    display: flex;
+    justify-content: center;
+    margin: 24px auto 0;
+    filter: drop-shadow(0 0 25px var(--bat-yellow)) drop-shadow(0 0 50px #f5c51844);
+    animation: batFloat 3s ease-in-out infinite;
+  }
+
+  .bat-logo svg { width: 120px; height: auto; fill: var(--bat-yellow); }
+
+  @keyframes batFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ── Header ── */
+  .header { text-align: center; padding: 8px 20px 16px; }
+
+  .header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.4rem, 5vw, 2.6rem);
+    background: linear-gradient(135deg, var(--bat-yellow), #fff176, var(--neon-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes titleGlow {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.3); }
+  }
+
+  .header .subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 2px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Container ── */
+  .container { max-width: 700px; margin: 0 auto; padding: 0 16px 40px; }
+
+  /* ── Gender legend ── */
+  .gender-legend {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: 1px solid;
+  }
+
+  .legend-chip.m { background: #1b5e2011; border-color: #4caf50; color: #4caf50; }
+  .legend-chip.f { background: #e91e6311; border-color: #e91e63; color: #e91e63; }
+  .legend-chip.n { background: #2196f311; border-color: #2196f3; color: #2196f3; }
+
+  /* ── Input ── */
+  .input-section { position: relative; margin-bottom: 16px; }
+
+  .input-wrapper {
+    position: relative;
+    border: 2px solid #333;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #111, #1a1a2e);
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .input-wrapper:focus-within {
+    border-color: var(--bat-yellow);
+    box-shadow: 0 0 20px var(--bat-glow), 0 0 40px #f5c51822;
+  }
+
+  .input-wrapper textarea {
+    width: 100%;
+    padding: 16px;
+    padding-right: 64px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    resize: none;
+    outline: none;
+    min-height: 64px;
+  }
+
+  .input-wrapper textarea::placeholder { color: #555; font-weight: 400; }
+
+  .send-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--bat-yellow);
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    color: var(--bat-yellow);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    -webkit-appearance: none;
+  }
+
+  .send-btn:hover, .send-btn:active {
+    background: var(--bat-yellow);
+    color: #000;
+    box-shadow: 0 0 20px var(--bat-glow);
+  }
+
+  /* ── Quick chips ── */
+  .quick-section { margin-bottom: 16px; }
+
+  .quick-section .label {
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+
+  .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .quick-chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: #1a1a2e;
+    border: 1px solid #333;
+    color: #aaa;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .quick-chip:hover, .quick-chip:active {
+    border-color: var(--bat-yellow);
+    color: var(--bat-yellow);
+    background: #f5c51811;
+  }
+
+  /* ── Results ── */
+  .results { display: flex; flex-direction: column; gap: 10px; }
+
+  .result-card {
+    background: linear-gradient(145deg, #111118, #1a1a2e);
+    border: 1px solid #2a2a3e;
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: all 0.3s;
+    animation: cardIn 0.4s ease-out backwards;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card .source {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .result-card .translation { font-size: 1.3rem; font-weight: 700; color: #fff; }
+
+  .result-card .meta { font-size: 0.85rem; margin-top: 3px; color: #888; }
+
+  .result-card .article { font-weight: 900; font-size: 1.4rem; margin-right: 4px; }
+
+  .result-card.maskulin .article { color: #4caf50; }
+  .result-card.feminin .article  { color: #e91e63; }
+  .result-card.neutrum .article  { color: #2196f3; }
+
+  .result-card .gender-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .result-card.maskulin .gender-badge { background: #1b5e2033; color: #4caf50; border: 1px solid #4caf5055; }
+  .result-card.feminin .gender-badge  { background: #e91e6322; color: #e91e63; border: 1px solid #e91e6355; }
+  .result-card.neutrum .gender-badge  { background: #2196f322; color: #2196f3; border: 1px solid #2196f355; }
+
+  .result-card.non-noun .translation { color: var(--bat-yellow); }
+
+  .result-card.non-noun .pos-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: #f5c51815;
+    color: var(--bat-yellow);
+    border: 1px solid #f5c51833;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .result-card.unknown { border-color: #ff5722; border-style: dashed; }
+  .result-card.unknown .translation { color: #ff8a65; }
+
+  .plural-info { color: #666; font-size: 0.8rem; font-style: italic; }
+
+  .empty-state { text-align: center; padding: 36px 20px; color: #444; }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .empty-state p { font-size: 0.95rem; letter-spacing: 2px; }
+
+  /* ── Tabs for dictionary browse ── */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: transparent;
+    border: 1px solid #333;
+    color: #666;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .tab-btn.active, .tab-btn:active {
+    border-color: var(--bat-yellow);
+    color: var(--bat-yellow);
+    background: #f5c51811;
+  }
+
+  .dict-grid {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .dict-grid.visible { display: flex; }
+
+  .dict-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #111118;
+    border-radius: 10px;
+    border: 1px solid #1e1e2e;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dict-row:active { border-color: var(--bat-yellow); background: #f5c51808; }
+
+  .dict-row .ru { color: #aaa; font-size: 1rem; font-weight: 600; }
+  .dict-row .de { font-size: 1rem; font-weight: 700; }
+  .dict-row .de.maskulin { color: #4caf50; }
+  .dict-row .de.feminin  { color: #e91e63; }
+  .dict-row .de.neutrum  { color: #2196f3; }
+  .dict-row .de.other    { color: var(--bat-yellow); }
+
+  .section-divider {
+    text-align: center;
+    padding: 16px 0 8px;
+    color: #444;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="bat-logo">
+  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <path d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm0 384c-97 0-176-79-176-176S159 80 256 80s176 79 176 176-79 176-176 176z" opacity="0.15"/>
+    <path d="M256 100c-12 0-24 38-30 58-8 26-40 42-70 52-14 4-30 14-38 28 0 0 16-8 38-6 20 2 36 14 42 30 4 10 2 28-10 52-8 16-14 32-14 32s22-18 40-34c14-12 24-18 32-18s18 6 32 18c18 16 40 34 40 34s-6-16-14-32c-12-24-14-42-10-52 6-16 22-28 42-30 22-2 38 6 38 6-8-14-24-24-38-28-30-10-62-26-70-52-6-20-18-58-30-58z"/>
+  </svg>
+</div>
+
+<div class="header">
+  <h1>Bat-Translator</h1>
+  <div class="subtitle">Russisch &rarr; Deutsch</div>
+</div>
+
+<div class="container">
+  <div class="gender-legend">
+    <span class="legend-chip m">der &mdash; maskulin</span>
+    <span class="legend-chip f">die &mdash; feminin</span>
+    <span class="legend-chip n">das &mdash; neutrum</span>
+  </div>
+
+  <div class="input-section">
+    <div class="input-wrapper">
+      <textarea id="inputText" placeholder="Введите русское слово..." rows="2"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();doTranslate();}"></textarea>
+      <button class="send-btn" onclick="doTranslate()" title="Translate">&#9654;</button>
+    </div>
+  </div>
+
+  <div class="quick-section">
+    <div class="label">Try these</div>
+    <div class="quick-chips">
+      <span class="quick-chip" onclick="quickTranslate('кошка')">&#128049; кошка</span>
+      <span class="quick-chip" onclick="quickTranslate('дом')">&#127968; дом</span>
+      <span class="quick-chip" onclick="quickTranslate('солнце')">&#9728;&#65039; солнце</span>
+      <span class="quick-chip" onclick="quickTranslate('любовь')">&#10084;&#65039; любовь</span>
+      <span class="quick-chip" onclick="quickTranslate('мать отец сын дочь')">&#128106; семья</span>
+      <span class="quick-chip" onclick="quickTranslate('хлеб молоко сыр')">&#127838; еда</span>
+      <span class="quick-chip" onclick="quickTranslate('я читать книга')">&#128218; фраза</span>
+      <span class="quick-chip" onclick="quickTranslate('до свидания')">&#128075; пока</span>
+    </div>
+  </div>
+
+  <div id="results" class="results">
+    <div class="empty-state">
+      <div class="icon">&#129415;</div>
+      <p>The Dark Knight awaits your words...</p>
+    </div>
+  </div>
+
+  <div class="section-divider" style="margin-top:24px;">Browse Dictionary</div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" onclick="showTab('all')">All</button>
+    <button class="tab-btn" onclick="showTab('noun')">Nouns</button>
+    <button class="tab-btn" onclick="showTab('verb')">Verbs</button>
+    <button class="tab-btn" onclick="showTab('adjective')">Adj.</button>
+    <button class="tab-btn" onclick="showTab('adverb')">Adv.</button>
+    <button class="tab-btn" onclick="showTab('pronoun')">Pron.</button>
+    <button class="tab-btn" onclick="showTab('other')">Other</button>
+  </div>
+
+  <div class="dict-grid visible" id="dictGrid"></div>
+</div>
+
+<script>
+// ── Full dictionary embedded ──
+const DICT = {
+  "человек":{"t":"Mensch","p":"noun","g":"maskulin","pl":"Menschen"},
+  "мужчина":{"t":"Mann","p":"noun","g":"maskulin","pl":"Männer"},
+  "женщина":{"t":"Frau","p":"noun","g":"feminin","pl":"Frauen"},
+  "ребёнок":{"t":"Kind","p":"noun","g":"neutrum","pl":"Kinder"},
+  "ребенок":{"t":"Kind","p":"noun","g":"neutrum","pl":"Kinder"},
+  "мальчик":{"t":"Junge","p":"noun","g":"maskulin","pl":"Jungen"},
+  "девочка":{"t":"Mädchen","p":"noun","g":"neutrum","pl":"Mädchen"},
+  "друг":{"t":"Freund","p":"noun","g":"maskulin","pl":"Freunde"},
+  "подруга":{"t":"Freundin","p":"noun","g":"feminin","pl":"Freundinnen"},
+  "семья":{"t":"Familie","p":"noun","g":"feminin","pl":"Familien"},
+  "мать":{"t":"Mutter","p":"noun","g":"feminin","pl":"Mütter"},
+  "отец":{"t":"Vater","p":"noun","g":"maskulin","pl":"Väter"},
+  "сын":{"t":"Sohn","p":"noun","g":"maskulin","pl":"Söhne"},
+  "дочь":{"t":"Tochter","p":"noun","g":"feminin","pl":"Töchter"},
+  "брат":{"t":"Bruder","p":"noun","g":"maskulin","pl":"Brüder"},
+  "сестра":{"t":"Schwester","p":"noun","g":"feminin","pl":"Schwestern"},
+  "дедушка":{"t":"Großvater","p":"noun","g":"maskulin","pl":"Großväter"},
+  "бабушка":{"t":"Großmutter","p":"noun","g":"feminin","pl":"Großmütter"},
+  "муж":{"t":"Ehemann","p":"noun","g":"maskulin","pl":"Ehemänner"},
+  "жена":{"t":"Ehefrau","p":"noun","g":"feminin","pl":"Ehefrauen"},
+  "учитель":{"t":"Lehrer","p":"noun","g":"maskulin","pl":"Lehrer"},
+  "учительница":{"t":"Lehrerin","p":"noun","g":"feminin","pl":"Lehrerinnen"},
+  "врач":{"t":"Arzt","p":"noun","g":"maskulin","pl":"Ärzte"},
+  "студент":{"t":"Student","p":"noun","g":"maskulin","pl":"Studenten"},
+  "студентка":{"t":"Studentin","p":"noun","g":"feminin","pl":"Studentinnen"},
+  "кошка":{"t":"Katze","p":"noun","g":"feminin","pl":"Katzen"},
+  "кот":{"t":"Kater","p":"noun","g":"maskulin","pl":"Kater"},
+  "собака":{"t":"Hund","p":"noun","g":"maskulin","pl":"Hunde"},
+  "птица":{"t":"Vogel","p":"noun","g":"maskulin","pl":"Vögel"},
+  "рыба":{"t":"Fisch","p":"noun","g":"maskulin","pl":"Fische"},
+  "лошадь":{"t":"Pferd","p":"noun","g":"neutrum","pl":"Pferde"},
+  "корова":{"t":"Kuh","p":"noun","g":"feminin","pl":"Kühe"},
+  "медведь":{"t":"Bär","p":"noun","g":"maskulin","pl":"Bären"},
+  "волк":{"t":"Wolf","p":"noun","g":"maskulin","pl":"Wölfe"},
+  "солнце":{"t":"Sonne","p":"noun","g":"feminin","pl":"Sonnen"},
+  "луна":{"t":"Mond","p":"noun","g":"maskulin","pl":"Monde"},
+  "звезда":{"t":"Stern","p":"noun","g":"maskulin","pl":"Sterne"},
+  "небо":{"t":"Himmel","p":"noun","g":"maskulin","pl":"Himmel"},
+  "земля":{"t":"Erde","p":"noun","g":"feminin","pl":"Erden"},
+  "вода":{"t":"Wasser","p":"noun","g":"neutrum","pl":"Wasser"},
+  "огонь":{"t":"Feuer","p":"noun","g":"neutrum","pl":"Feuer"},
+  "дождь":{"t":"Regen","p":"noun","g":"maskulin","pl":"Regen"},
+  "снег":{"t":"Schnee","p":"noun","g":"maskulin","pl":"Schnee"},
+  "ветер":{"t":"Wind","p":"noun","g":"maskulin","pl":"Winde"},
+  "дерево":{"t":"Baum","p":"noun","g":"maskulin","pl":"Bäume"},
+  "цветок":{"t":"Blume","p":"noun","g":"feminin","pl":"Blumen"},
+  "лес":{"t":"Wald","p":"noun","g":"maskulin","pl":"Wälder"},
+  "река":{"t":"Fluss","p":"noun","g":"maskulin","pl":"Flüsse"},
+  "море":{"t":"Meer","p":"noun","g":"neutrum","pl":"Meere"},
+  "озеро":{"t":"See","p":"noun","g":"maskulin","pl":"Seen"},
+  "гора":{"t":"Berg","p":"noun","g":"maskulin","pl":"Berge"},
+  "дом":{"t":"Haus","p":"noun","g":"neutrum","pl":"Häuser"},
+  "квартира":{"t":"Wohnung","p":"noun","g":"feminin","pl":"Wohnungen"},
+  "комната":{"t":"Zimmer","p":"noun","g":"neutrum","pl":"Zimmer"},
+  "дверь":{"t":"Tür","p":"noun","g":"feminin","pl":"Türen"},
+  "окно":{"t":"Fenster","p":"noun","g":"neutrum","pl":"Fenster"},
+  "стол":{"t":"Tisch","p":"noun","g":"maskulin","pl":"Tische"},
+  "стул":{"t":"Stuhl","p":"noun","g":"maskulin","pl":"Stühle"},
+  "кровать":{"t":"Bett","p":"noun","g":"neutrum","pl":"Betten"},
+  "книга":{"t":"Buch","p":"noun","g":"neutrum","pl":"Bücher"},
+  "ключ":{"t":"Schlüssel","p":"noun","g":"maskulin","pl":"Schlüssel"},
+  "машина":{"t":"Auto","p":"noun","g":"neutrum","pl":"Autos"},
+  "телефон":{"t":"Telefon","p":"noun","g":"neutrum","pl":"Telefone"},
+  "часы":{"t":"Uhr","p":"noun","g":"feminin","pl":"Uhren"},
+  "письмо":{"t":"Brief","p":"noun","g":"maskulin","pl":"Briefe"},
+  "газета":{"t":"Zeitung","p":"noun","g":"feminin","pl":"Zeitungen"},
+  "картина":{"t":"Bild","p":"noun","g":"neutrum","pl":"Bilder"},
+  "зеркало":{"t":"Spiegel","p":"noun","g":"maskulin","pl":"Spiegel"},
+  "хлеб":{"t":"Brot","p":"noun","g":"neutrum","pl":"Brote"},
+  "молоко":{"t":"Milch","p":"noun","g":"feminin"},
+  "мясо":{"t":"Fleisch","p":"noun","g":"neutrum"},
+  "яблоко":{"t":"Apfel","p":"noun","g":"maskulin","pl":"Äpfel"},
+  "чай":{"t":"Tee","p":"noun","g":"maskulin","pl":"Tees"},
+  "кофе":{"t":"Kaffee","p":"noun","g":"maskulin","pl":"Kaffees"},
+  "сахар":{"t":"Zucker","p":"noun","g":"maskulin"},
+  "соль":{"t":"Salz","p":"noun","g":"neutrum","pl":"Salze"},
+  "суп":{"t":"Suppe","p":"noun","g":"feminin","pl":"Suppen"},
+  "рис":{"t":"Reis","p":"noun","g":"maskulin"},
+  "масло":{"t":"Butter","p":"noun","g":"feminin"},
+  "сыр":{"t":"Käse","p":"noun","g":"maskulin","pl":"Käse"},
+  "яйцо":{"t":"Ei","p":"noun","g":"neutrum","pl":"Eier"},
+  "торт":{"t":"Kuchen","p":"noun","g":"maskulin","pl":"Kuchen"},
+  "голова":{"t":"Kopf","p":"noun","g":"maskulin","pl":"Köpfe"},
+  "рука":{"t":"Hand","p":"noun","g":"feminin","pl":"Hände"},
+  "нога":{"t":"Bein","p":"noun","g":"neutrum","pl":"Beine"},
+  "глаз":{"t":"Auge","p":"noun","g":"neutrum","pl":"Augen"},
+  "сердце":{"t":"Herz","p":"noun","g":"neutrum","pl":"Herzen"},
+  "время":{"t":"Zeit","p":"noun","g":"feminin","pl":"Zeiten"},
+  "день":{"t":"Tag","p":"noun","g":"maskulin","pl":"Tage"},
+  "ночь":{"t":"Nacht","p":"noun","g":"feminin","pl":"Nächte"},
+  "утро":{"t":"Morgen","p":"noun","g":"maskulin","pl":"Morgen"},
+  "вечер":{"t":"Abend","p":"noun","g":"maskulin","pl":"Abende"},
+  "год":{"t":"Jahr","p":"noun","g":"neutrum","pl":"Jahre"},
+  "месяц":{"t":"Monat","p":"noun","g":"maskulin","pl":"Monate"},
+  "неделя":{"t":"Woche","p":"noun","g":"feminin","pl":"Wochen"},
+  "минута":{"t":"Minute","p":"noun","g":"feminin","pl":"Minuten"},
+  "работа":{"t":"Arbeit","p":"noun","g":"feminin","pl":"Arbeiten"},
+  "школа":{"t":"Schule","p":"noun","g":"feminin","pl":"Schulen"},
+  "город":{"t":"Stadt","p":"noun","g":"feminin","pl":"Städte"},
+  "страна":{"t":"Land","p":"noun","g":"neutrum","pl":"Länder"},
+  "улица":{"t":"Straße","p":"noun","g":"feminin","pl":"Straßen"},
+  "магазин":{"t":"Geschäft","p":"noun","g":"neutrum","pl":"Geschäfte"},
+  "деньги":{"t":"Geld","p":"noun","g":"neutrum","pl":"Gelder"},
+  "вопрос":{"t":"Frage","p":"noun","g":"feminin","pl":"Fragen"},
+  "ответ":{"t":"Antwort","p":"noun","g":"feminin","pl":"Antworten"},
+  "проблема":{"t":"Problem","p":"noun","g":"neutrum","pl":"Probleme"},
+  "жизнь":{"t":"Leben","p":"noun","g":"neutrum","pl":"Leben"},
+  "любовь":{"t":"Liebe","p":"noun","g":"feminin","pl":"Lieben"},
+  "мир":{"t":"Welt","p":"noun","g":"feminin","pl":"Welten"},
+  "слово":{"t":"Wort","p":"noun","g":"neutrum","pl":"Wörter"},
+  "язык":{"t":"Sprache","p":"noun","g":"feminin","pl":"Sprachen"},
+  "музыка":{"t":"Musik","p":"noun","g":"feminin"},
+  "песня":{"t":"Lied","p":"noun","g":"neutrum","pl":"Lieder"},
+  "история":{"t":"Geschichte","p":"noun","g":"feminin","pl":"Geschichten"},
+  "правда":{"t":"Wahrheit","p":"noun","g":"feminin","pl":"Wahrheiten"},
+  "счастье":{"t":"Glück","p":"noun","g":"neutrum"},
+  "война":{"t":"Krieg","p":"noun","g":"maskulin","pl":"Kriege"},
+  "мечта":{"t":"Traum","p":"noun","g":"maskulin","pl":"Träume"},
+  "быть":{"t":"sein","p":"verb"},
+  "иметь":{"t":"haben","p":"verb"},
+  "делать":{"t":"machen","p":"verb"},
+  "сделать":{"t":"machen","p":"verb"},
+  "идти":{"t":"gehen","p":"verb"},
+  "ходить":{"t":"gehen","p":"verb"},
+  "говорить":{"t":"sprechen","p":"verb"},
+  "сказать":{"t":"sagen","p":"verb"},
+  "знать":{"t":"wissen","p":"verb"},
+  "хотеть":{"t":"wollen","p":"verb"},
+  "мочь":{"t":"können","p":"verb"},
+  "видеть":{"t":"sehen","p":"verb"},
+  "думать":{"t":"denken","p":"verb"},
+  "работать":{"t":"arbeiten","p":"verb"},
+  "жить":{"t":"leben","p":"verb"},
+  "любить":{"t":"lieben","p":"verb"},
+  "читать":{"t":"lesen","p":"verb"},
+  "писать":{"t":"schreiben","p":"verb"},
+  "есть":{"t":"essen","p":"verb"},
+  "пить":{"t":"trinken","p":"verb"},
+  "спать":{"t":"schlafen","p":"verb"},
+  "играть":{"t":"spielen","p":"verb"},
+  "учить":{"t":"lernen","p":"verb"},
+  "понимать":{"t":"verstehen","p":"verb"},
+  "помогать":{"t":"helfen","p":"verb"},
+  "давать":{"t":"geben","p":"verb"},
+  "брать":{"t":"nehmen","p":"verb"},
+  "ждать":{"t":"warten","p":"verb"},
+  "стоять":{"t":"stehen","p":"verb"},
+  "сидеть":{"t":"sitzen","p":"verb"},
+  "бежать":{"t":"laufen","p":"verb"},
+  "открывать":{"t":"öffnen","p":"verb"},
+  "закрывать":{"t":"schließen","p":"verb"},
+  "начинать":{"t":"beginnen","p":"verb"},
+  "кончать":{"t":"beenden","p":"verb"},
+  "покупать":{"t":"kaufen","p":"verb"},
+  "продавать":{"t":"verkaufen","p":"verb"},
+  "большой":{"t":"groß","p":"adjective"},
+  "маленький":{"t":"klein","p":"adjective"},
+  "новый":{"t":"neu","p":"adjective"},
+  "старый":{"t":"alt","p":"adjective"},
+  "хороший":{"t":"gut","p":"adjective"},
+  "плохой":{"t":"schlecht","p":"adjective"},
+  "красивый":{"t":"schön","p":"adjective"},
+  "быстрый":{"t":"schnell","p":"adjective"},
+  "медленный":{"t":"langsam","p":"adjective"},
+  "холодный":{"t":"kalt","p":"adjective"},
+  "горячий":{"t":"heiß","p":"adjective"},
+  "тёплый":{"t":"warm","p":"adjective"},
+  "тёмный":{"t":"dunkel","p":"adjective"},
+  "светлый":{"t":"hell","p":"adjective"},
+  "сильный":{"t":"stark","p":"adjective"},
+  "слабый":{"t":"schwach","p":"adjective"},
+  "длинный":{"t":"lang","p":"adjective"},
+  "короткий":{"t":"kurz","p":"adjective"},
+  "белый":{"t":"weiß","p":"adjective"},
+  "чёрный":{"t":"schwarz","p":"adjective"},
+  "красный":{"t":"rot","p":"adjective"},
+  "синий":{"t":"blau","p":"adjective"},
+  "зелёный":{"t":"grün","p":"adjective"},
+  "жёлтый":{"t":"gelb","p":"adjective"},
+  "молодой":{"t":"jung","p":"adjective"},
+  "важный":{"t":"wichtig","p":"adjective"},
+  "свободный":{"t":"frei","p":"adjective"},
+  "счастливый":{"t":"glücklich","p":"adjective"},
+  "грустный":{"t":"traurig","p":"adjective"},
+  "умный":{"t":"klug","p":"adjective"},
+  "глупый":{"t":"dumm","p":"adjective"},
+  "богатый":{"t":"reich","p":"adjective"},
+  "бедный":{"t":"arm","p":"adjective"},
+  "очень":{"t":"sehr","p":"adverb"},
+  "тоже":{"t":"auch","p":"adverb"},
+  "уже":{"t":"schon","p":"adverb"},
+  "ещё":{"t":"noch","p":"adverb"},
+  "еще":{"t":"noch","p":"adverb"},
+  "здесь":{"t":"hier","p":"adverb"},
+  "тут":{"t":"hier","p":"adverb"},
+  "там":{"t":"dort","p":"adverb"},
+  "сейчас":{"t":"jetzt","p":"adverb"},
+  "потом":{"t":"dann","p":"adverb"},
+  "всегда":{"t":"immer","p":"adverb"},
+  "никогда":{"t":"nie","p":"adverb"},
+  "быстро":{"t":"schnell","p":"adverb"},
+  "медленно":{"t":"langsam","p":"adverb"},
+  "хорошо":{"t":"gut","p":"adverb"},
+  "плохо":{"t":"schlecht","p":"adverb"},
+  "вместе":{"t":"zusammen","p":"adverb"},
+  "домой":{"t":"nach Hause","p":"adverb"},
+  "сегодня":{"t":"heute","p":"adverb"},
+  "завтра":{"t":"morgen","p":"adverb"},
+  "вчера":{"t":"gestern","p":"adverb"},
+  "я":{"t":"ich","p":"pronoun"},
+  "ты":{"t":"du","p":"pronoun"},
+  "он":{"t":"er","p":"pronoun"},
+  "она":{"t":"sie","p":"pronoun"},
+  "оно":{"t":"es","p":"pronoun"},
+  "мы":{"t":"wir","p":"pronoun"},
+  "вы":{"t":"ihr / Sie","p":"pronoun"},
+  "они":{"t":"sie","p":"pronoun"},
+  "это":{"t":"das / dies","p":"pronoun"},
+  "что":{"t":"was","p":"pronoun"},
+  "кто":{"t":"wer","p":"pronoun"},
+  "мой":{"t":"mein","p":"pronoun"},
+  "твой":{"t":"dein","p":"pronoun"},
+  "его":{"t":"sein","p":"pronoun"},
+  "её":{"t":"ihr","p":"pronoun"},
+  "наш":{"t":"unser","p":"pronoun"},
+  "ваш":{"t":"euer / Ihr","p":"pronoun"},
+  "в":{"t":"in","p":"preposition"},
+  "на":{"t":"auf","p":"preposition"},
+  "с":{"t":"mit","p":"preposition"},
+  "из":{"t":"aus","p":"preposition"},
+  "к":{"t":"zu","p":"preposition"},
+  "о":{"t":"über","p":"preposition"},
+  "для":{"t":"für","p":"preposition"},
+  "без":{"t":"ohne","p":"preposition"},
+  "до":{"t":"bis","p":"preposition"},
+  "после":{"t":"nach","p":"preposition"},
+  "между":{"t":"zwischen","p":"preposition"},
+  "перед":{"t":"vor","p":"preposition"},
+  "за":{"t":"hinter / für","p":"preposition"},
+  "под":{"t":"unter","p":"preposition"},
+  "над":{"t":"über","p":"preposition"},
+  "и":{"t":"und","p":"conjunction"},
+  "но":{"t":"aber","p":"conjunction"},
+  "или":{"t":"oder","p":"conjunction"},
+  "а":{"t":"aber / und","p":"conjunction"},
+  "потому что":{"t":"weil","p":"conjunction"},
+  "если":{"t":"wenn / falls","p":"conjunction"},
+  "когда":{"t":"wenn / als","p":"conjunction"},
+  "чтобы":{"t":"damit / um zu","p":"conjunction"},
+  "один":{"t":"eins","p":"numeral"},
+  "два":{"t":"zwei","p":"numeral"},
+  "три":{"t":"drei","p":"numeral"},
+  "четыре":{"t":"vier","p":"numeral"},
+  "пять":{"t":"fünf","p":"numeral"},
+  "шесть":{"t":"sechs","p":"numeral"},
+  "семь":{"t":"sieben","p":"numeral"},
+  "восемь":{"t":"acht","p":"numeral"},
+  "девять":{"t":"neun","p":"numeral"},
+  "десять":{"t":"zehn","p":"numeral"},
+  "сто":{"t":"hundert","p":"numeral"},
+  "тысяча":{"t":"tausend","p":"numeral"},
+  "да":{"t":"ja","p":"particle"},
+  "нет":{"t":"nein","p":"particle"},
+  "не":{"t":"nicht","p":"particle"},
+  "спасибо":{"t":"danke","p":"particle"},
+  "пожалуйста":{"t":"bitte","p":"particle"},
+  "привет":{"t":"hallo","p":"particle"},
+  "до свидания":{"t":"auf Wiedersehen","p":"particle"}
+};
+
+const ARTICLES = { maskulin: "der", feminin: "die", neutrum: "das" };
+
+function translateText(text) {
+  const words = text.trim().split(/\s+/);
+  const results = [];
+  let i = 0;
+  while (i < words.length) {
+    if (i + 1 < words.length) {
+      const phrase = (words[i] + " " + words[i+1]).toLowerCase();
+      if (DICT[phrase]) {
+        results.push({ source: words[i] + " " + words[i+1], entry: DICT[phrase] });
+        i += 2;
+        continue;
+      }
+    }
+    const w = words[i].toLowerCase();
+    results.push({ source: words[i], entry: DICT[w] || null });
+    i++;
+  }
+  return results;
+}
+
+function quickTranslate(text) {
+  document.getElementById('inputText').value = text;
+  doTranslate();
+}
+
+function doTranslate() {
+  const input = document.getElementById('inputText').value.trim();
+  if (!input) return;
+
+  const results = translateText(input);
+  const container = document.getElementById('results');
+
+  if (results.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>Nothing to translate</p></div>';
+    return;
+  }
+
+  let html = '';
+  results.forEach((item, i) => {
+    const style = `animation-delay: ${i * 0.08}s`;
+    const e = item.entry;
+
+    if (!e) {
+      html += `<div class="result-card unknown" style="${style}">
+        <div class="source">${item.source}</div>
+        <div class="translation">Not in dictionary</div>
+      </div>`;
+    } else if (e.p === 'noun') {
+      const article = ARTICLES[e.g];
+      const plural = e.pl ? `<span class="plural-info">Pl. ${e.pl}</span>` : '';
+      html += `<div class="result-card ${e.g}" style="${style}">
+        <div class="source">${item.source}</div>
+        <div class="translation">
+          <span class="article">${article}</span>${e.t}
+          <span class="gender-badge">${e.g}</span>
+        </div>
+        <div class="meta">${plural}</div>
+      </div>`;
+    } else {
+      html += `<div class="result-card non-noun" style="${style}">
+        <div class="source">${item.source}</div>
+        <div class="translation">
+          ${e.t}
+          <span class="pos-tag">${e.p}</span>
+        </div>
+      </div>`;
+    }
+  });
+
+  container.innerHTML = html;
+}
+
+// ── Dictionary browser ──
+let currentTab = 'all';
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderDict();
+}
+
+function renderDict() {
+  const grid = document.getElementById('dictGrid');
+  const otherTypes = ['preposition','conjunction','numeral','particle'];
+  let html = '';
+
+  const entries = Object.entries(DICT).filter(([k, v]) => {
+    if (currentTab === 'all') return true;
+    if (currentTab === 'other') return otherTypes.includes(v.p);
+    return v.p === currentTab;
+  });
+
+  entries.forEach(([ru, e]) => {
+    let deClass = 'other';
+    let deText = e.t;
+    if (e.p === 'noun') {
+      deClass = e.g;
+      deText = `${ARTICLES[e.g]} ${e.t}`;
+    }
+    html += `<div class="dict-row" onclick="quickTranslate('${ru}')">
+      <span class="ru">${ru}</span>
+      <span class="de ${deClass}">${deText}</span>
+    </div>`;
+  });
+
+  grid.innerHTML = html;
+  grid.classList.add('visible');
+}
+
+renderDict();
+</script>
+</body>
+</html>
